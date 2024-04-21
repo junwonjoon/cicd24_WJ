@@ -48,11 +48,11 @@ def get_data_from_url(url: str) -> pd.DataFrame:
     return pd.read_html(url)
 
 
-def ui() -> int:
+def ui() -> str:
     """
     This the mainpage's UI
     Returns:
-    - int: number of tables created.
+    - str: messages to be logged.
     """
     st.set_page_config(
         page_title="Wonjoon's CSV Generator",
@@ -71,7 +71,7 @@ def ui() -> int:
                 "s" if length_dfs > 1 else ""} found on the webpage")
     except BaseException:
         st.error(f"Could not find Table in the URL: {url}")
-        return 0
+        return f"Couldn't load a table in {url}"
     i = 1
     for data in list_of_dfs:
         st.header(f"Table {i}")
@@ -85,9 +85,9 @@ def ui() -> int:
             mime='text/csv',
         )
         i += 1
-    return len(list_of_dfs)
+    return f"Successfully converted {len(list_of_dfs)} table(s) from {url}"
 
 
 if __name__ == "__main__":
-    data_converted = ui()
-    logger.info(f"Converted {data_converted} of table(s)")
+    log_message = ui()
+    logger.info(log_message)
