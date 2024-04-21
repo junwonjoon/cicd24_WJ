@@ -14,7 +14,7 @@ This is source code to my streamlit project that is currently hosted in the webs
 Professor Wolf Paulus for providing the initial setup of Azure.
 
 
-## Prerequisite
+## Prerequisites
 git and GitHub
 GitHub is an Internet hosting service for software development and version control using git. However, it also provides tools to run tests and perform continuous integration tasks. You can signup here: https://github.com/signup
 
