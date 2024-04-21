@@ -2,8 +2,8 @@
     Easy Azure Streamlit Demo
     Original Author: Wolf Paulus (wolf@paulus.com)
     Forked by Wonjoon Jun
-    This code is used to convert data from html to different chart. This time I have
-    implemented cache to optimize data handling.
+    This is streamlit code that converts url to csv file.
+    cache_resource decorator was implemented to enhance performance.
 """
 import streamlit as st
 from log import logger
@@ -60,13 +60,14 @@ def ui() -> int:
         page_icon="📃"
     )
     st.title("URL to CSV Converter")
-    st.subheader("Enter a wikipedia page, or any URL with HTML table")
+    st.subheader("Enter a wikipedia page or any URL with HTML table")
     url = st.text_input(
         "Enter URL here:",
         "https://en.wikipedia.org/wiki/List_of_countries_by_real_GDP_growth_rate")
     try:
         list_of_dfs = get_data_from_url(url)
-        st.write(f"Total {len(list_of_dfs)} table(s) found on the webpage")
+        length_dfs = len(list_of_dfs)
+        st.write(f"Total {length_dfs} table{"s" if length_dfs > 1 else ""} found on the webpage")
     except BaseException:
         st.error(f"Could not find Table in the URL: {url}")
         return 0
