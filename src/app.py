@@ -67,8 +67,10 @@ def ui() -> int:
     try:
         list_of_dfs = get_data_from_url(url)
         length_dfs = len(list_of_dfs)
-        st.write(f"Total {length_dfs} table{"s" if length_dfs > 1 else ""} found on the webpage")
-    except BaseException:
+        st.write(f"Total {length_dfs} table{"
+        s
+        " if length_dfs > 1 else " "}found on the webpage")
+        except BaseException:
         st.error(f"Could not find Table in the URL: {url}")
         return 0
     i = 1
