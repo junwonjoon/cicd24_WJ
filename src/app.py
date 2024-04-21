@@ -34,7 +34,7 @@ def is_website_up(url):
         return False
 
 
-@st.cache_resource() 
+@st.cache_resource()
 def get_data_from_url(url: str) -> pd.DataFrame:
     """
     This is function to convert the URL's table into pd.DataFrame to be later processed.
