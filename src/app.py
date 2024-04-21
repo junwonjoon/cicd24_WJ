@@ -13,9 +13,15 @@ import requests
 
 def is_website_up(url):
     """
-    Checks validity of the URL, this is used for pytest.
+    Checks validity of the URL, this function is only used for pytest.
     In main try and except are used to check not only the
-    validity of the URL, but prescence of 
+    validity of the URL, but if there is a table to convery
+    Parameters:
+    - url (str): The URL of the website to check.
+    Returns:
+    - bool: True if the website is up, otherwise False.
+    Raises:
+    - requests.exceptions.RequestException: If an error occurs during the HTTP request
     """
     try:
         response = requests.get(url, timeout=10)  
@@ -28,10 +34,24 @@ def is_website_up(url):
         return False
     
 @st.cache_resource()
-def get_data_from_url(url):
+def get_data_from_url(url:str) -> pd.DataFrame:
+    """
+    This is function to convert the URL's table into pd.DataFrame to be later processed.
+    This is made into seperate function, in order to cache resources.
+    Parameters:
+    - url (str): The URL of the website to convert to tables.
+    Returns:
+    - pd.DataFrame: Returns pd.DataFrame class if the function is able to succesfully convert.
+    Raises:
+    """
     return pd.read_html(url)
 
 def ui() -> int:
+    """
+    This the mainpage's UI
+    Returns:
+    - int: number of tables created.
+    """
     st.set_page_config(
     page_title="Wonjoon's CSV Generator",
     page_icon="📃"
@@ -64,4 +84,3 @@ def ui() -> int:
 if __name__ == "__main__":
     data_converted = ui()
     logger.info(f"Converted {data_converted} of table(s)")
-
