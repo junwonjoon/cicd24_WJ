@@ -3,7 +3,7 @@
     Forked by Wonjoon Jun (junwonjoon41@gmail.com)
     This is streamlit code that converts url to csv file.
     cache_resource decorator was implemented to enhance performance.
-    Resources: 
+    Resources:
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_html.html
     https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.transpose.html
     https://www.youtube.com/watch?v=nF-PQj0k5-o
@@ -15,6 +15,7 @@ from log import logger
 import pandas as pd
 import numpy as np
 import requests
+
 
 def is_website_up(url):
     """
@@ -77,7 +78,7 @@ def ui() -> str:
     except BaseException:
         st.error(f"Could not find Table in the URL: {url}")
         return f"Couldn't load a table in {url}"
-    url_meaning = url.split("/")[-1].replace("_"," ").replace("-"," ")
+    url_meaning = url.split("/")[-1].replace("_", " ").replace("-", " ")
     st.subheader(f"{url_meaning.title()}")
     i = 0
     for data in list_of_dfs:
