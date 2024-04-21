@@ -20,8 +20,8 @@ except OSError as err:
         stderr)  # set streamhandler to stderr
     consoleHandler.setFormatter(logFormatter)
     logger.addHandler(consoleHandler)
-    
-if __name__== "__main__":
+
+if __name__ == "__main__":
     logger.debug('This is a debug message')
     logger.warning('This is a warning message')
     logger.error('This is a error message')
