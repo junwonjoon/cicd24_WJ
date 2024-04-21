@@ -1,15 +1,20 @@
 """
     Original Author: Wolf Paulus (wolf@paulus.com)
-    Forked by Wonjoon Jun
+    Forked by Wonjoon Jun (junwonjoon41@gmail.com)
     This is streamlit code that converts url to csv file.
     cache_resource decorator was implemented to enhance performance.
+    Resources: 
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_html.html
+    https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.transpose.html
+    https://www.youtube.com/watch?v=nF-PQj0k5-o
+    https://docs.streamlit.io/develop/api-reference
 """
+from cycler import K
 import streamlit as st
 from log import logger
 import pandas as pd
 import numpy as np
 import requests
-
 
 def is_website_up(url):
     """
@@ -72,9 +77,12 @@ def ui() -> str:
     except BaseException:
         st.error(f"Could not find Table in the URL: {url}")
         return f"Couldn't load a table in {url}"
-    i = 1
+    url_meaning = url.split("/")[-1].replace("_"," ").replace("-"," ")
+    st.subheader(f"{url_meaning.title()}")
+    i = 0
     for data in list_of_dfs:
-        st.header(f"Table {i}")
+        i += 1
+        st.subheader(f"Table {i}")
         # st.table can still fail with try. So, try was removed here.
         st.table(data)
         csv = data.to_csv().encode('utf-8')
@@ -84,7 +92,17 @@ def ui() -> str:
             file_name=f'Table_{i}.csv',
             mime='text/csv',
         )
-        i += 1
+        if st.button(f"Flip Rows and Columns", key=i):
+            data = data.transpose()
+            st.write(data)
+            csv = data.to_csv().encode('utf-8')
+            st.download_button(
+                label=f"Download Transposed Table {i} as CSV",
+                data=csv,
+                file_name=f'Table_{i}_Transposed.csv',
+                mime='text/csv',
+            )
+        st.divider()
     return f"Successfully converted {len(list_of_dfs)} table(s) from {url}"
 
 
