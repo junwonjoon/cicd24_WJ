@@ -57,7 +57,7 @@ def ui() -> int:
     page_icon="📃"
     )
     st.title("URL to CSV Converter")
-    st.header("Enter a wikipedia page, or any URL with HTML table")
+    st.subheader("Enter a wikipedia page, or any URL with HTML table")
     url = st.text_input("Enter URL here:","https://en.wikipedia.org/wiki/List_of_countries_by_real_GDP_growth_rate")
     try:
         list_of_dfs = get_data_from_url(url)
@@ -79,7 +79,6 @@ def ui() -> int:
         )
         i += 1
     return len(list_of_dfs)
-
 
 if __name__ == "__main__":
     data_converted = ui()
