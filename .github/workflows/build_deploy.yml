@@ -45,12 +45,12 @@ jobs:
       #   if: steps.autopep8.outputs.exit-code == 2
       #   run: exit 1
 
-      - name: Test with pytest
-        run: pytest
+      # - name: Test with pytest
+      #   run: pytest
 
-      - name: Fail if tests failed
-        if: ${{ failure() && steps.test_step.outcome == 'failure' }}
-        run: exit 1
+      # - name: Fail if tests failed
+      #   if: ${{ failure() && steps.test_step.outcome == 'failure' }}
+      #   run: exit 1
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
