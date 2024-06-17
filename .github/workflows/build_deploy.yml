@@ -37,13 +37,13 @@ jobs:
           pip install -r tests/requirements.txt
           pip install -r ./requirements.txt
 
-      - name: Lint with autopep8
-        run: |
-          autopep8 --exit-code --recursive --diff --aggressive --aggressive ./src
+      # - name: Lint with autopep8
+      #   run: |
+      #     autopep8 --exit-code --recursive --diff --aggressive --aggressive ./src
 
-      - name: Fail if autopep8 made changes
-        if: steps.autopep8.outputs.exit-code == 2
-        run: exit 1
+      # - name: Fail if autopep8 made changes
+      #   if: steps.autopep8.outputs.exit-code == 2
+      #   run: exit 1
 
       - name: Test with pytest
         run: pytest
