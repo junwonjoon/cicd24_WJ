@@ -44,12 +44,12 @@ if status == "Faculty":
     password_input = st.text_input("Enter admin password:")
     if st.button("Continue"):
         if password_input == password:
-            st.page_link("pages/Feedback (Admin View).py", label="View Feedback for All Students", icon = "🧑‍🎓")
+            st.page_link("Feedback (Admin View).py", label="View Feedback for All Students", icon = "🧑‍🎓")
             st.session_state.authentication_status = True 
         else:
             st.error("Incorrect Password")
 else:
-    st.page_link("pages/Create New Student.py", label="I am a new student")
+    st.page_link("Create New Student.py", label="I am a new student")
     file_path_for_user_profile = 'user_profiles.json'
     if os.path.exists(file_path_for_user_profile):
         # Read the existing data
@@ -75,15 +75,15 @@ else:
             for profiles in existing_data:
                 if profiles["Student"] == st.session_state["STUDENT_NAME"] and profiles["ID"] ==  st.session_state["STUDENT_ID"]:
                     st.session_state["STUDENT_SUBJECT"] = list(profiles["Subject"])
-                    st.page_link("pages/My Tutor.py", label="My tutor", icon = "🧑🏽‍🏫")
-                    st.page_link("pages/Feedback (Student View).py", label="Feedback Page", icon = "📈")
+                    st.page_link("My Tutor.py", label="My tutor", icon = "🧑🏽‍🏫")
+                    st.page_link("Feedback (Student View).py", label="Feedback Page", icon = "📈")
 
         
 
     # if st.button("Continue"):
     #     #change the list later
     #     if unique_code != "" and unique_code in [unique_code]:
-    #         st.page_link("pages/Feedback (Student View).py", label="View Feedback", icon = "🧑‍🎓")
-    #         st.page_link("pages/My Tutor.py", label="My tutor", icon = "🧑‍🏫")
+    #         st.page_link("Feedback (Student View).py", label="View Feedback", icon = "🧑‍🎓")
+    #         st.page_link("My Tutor.py", label="My tutor", icon = "🧑‍🏫")
     #     else:
     #         st.error("Incorrect Code")
