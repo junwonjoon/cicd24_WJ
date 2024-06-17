@@ -28,6 +28,7 @@ To build, test, and run your appliaction locally, you need python 3.11 or greate
 Python 3.11 (or better): https://www.python.org/downloads/ Windows: winget install -e –id Python.Python.3.11
 VSCode (optional but convenient): https://code.visualstudio.com The GUI installer apps work just fine, but if you really want to use the cli for this as well …. Windows: winget install -e –id Microsoft.VisualStudioCode Mac: brew install –cask visual-studio-code (downloading the installe)
 
+
 Install the required dependencies:
    ```bash
    pip install -r requirements.txt
