@@ -1,112 +1,89 @@
 """
-    Original Author: Wolf Paulus (wolf@paulus.com)
-    Forked by Wonjoon Jun (junwonjoon41@gmail.com)
-    This is streamlit code that converts url to csv file.
-    cache_resource decorator was implemented to enhance performance.
-    Resources:
-    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_html.html
-    https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.transpose.html
-    https://www.youtube.com/watch?v=nF-PQj0k5-o
-    https://docs.streamlit.io/develop/api-reference
+Welcome to the main page
+Author: Wonjoon Jun
+Date: Jun 7, 2024
+Please view README.md for more information.
 """
-from cycler import K
 import streamlit as st
-from log import logger
 import pandas as pd
-import numpy as np
-import requests
+from typing_extensions import override
+import json
+import os
 
-
-def is_website_up(url):
-    """
-    Checks validity of the URL, this function is only used for pytest.
-    In main try and except are used to check not only the
-    validity of the URL, but if there is a table to convery
-    Parameters:
-    - url (str): The URL of the website to check.
-    Returns:
-    - bool: True if the website is up, otherwise False.
-    Raises:
-    - requests.exceptions.RequestException: If an error occurs during the HTTP request
-    """
+def get_key()->str:
     try:
-        response = requests.get(url, timeout=10)
-        if response.status_code < 400:
-            return True
+        with open("key.txt", 'r') as infile:
+            return infile.read()
+    except OSError:
+        st.error("failed to retrieve API KEY")
+        return ""
+
+st.set_page_config(
+    page_title="TAILOR MVP",
+    page_icon="✏️",
+    initial_sidebar_state = "collapsed",
+)
+
+st.markdown(
+    """
+<style>
+    [data-testid="collapsedControl"] {
+        display: none
+    }
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+
+password = "1234"
+st.title("TAILOR")
+status = st.selectbox("Choose your status:", ["Faculty", "Student"])
+
+if status == "Faculty":
+    password_input = st.text_input("Enter admin password:")
+    if st.button("Continue"):
+        if password_input == password:
+            st.page_link("pages/Feedback (Admin View).py", label="View Feedback for All Students", icon = "🧑‍🎓")
+            st.session_state.authentication_status = True 
         else:
-            return False
-    except requests.exceptions.RequestException as e:
-        print(f"Error checking website: {e}")
-        return False
+            st.error("Incorrect Password")
+else:
+    st.page_link("pages/Create New Student.py", label="I am a new student")
+    file_path_for_user_profile = 'user_profiles.json'
+    if os.path.exists(file_path_for_user_profile):
+        # Read the existing data
+        with open(file_path_for_user_profile, 'r') as infile:
+            try:
+                existing_data = json.load(infile)
+                # Ensure it's a list
+                if not isinstance(existing_data, list):
+                    existing_data = []
+            except json.JSONDecodeError:
+                existing_data = []
+    else:
+        existing_data = []
+    if existing_data:
+        # st.write(existing_data)
+        names = [items["Student"] for items in existing_data]
+        IDs = [items["ID"] for items in existing_data]
+        profile = zip(names, IDs)
+        STUDENT_PROFILE = st.radio("Choose your profile (This too later should be automatic)", profile)
+        if st.button("The student above is me"):
+            st.session_state["STUDENT_NAME"] = STUDENT_PROFILE[0]
+            st.session_state["STUDENT_ID"] = STUDENT_PROFILE[1]
+            for profiles in existing_data:
+                if profiles["Student"] == st.session_state["STUDENT_NAME"] and profiles["ID"] ==  st.session_state["STUDENT_ID"]:
+                    st.session_state["STUDENT_SUBJECT"] = list(profiles["Subject"])
+                    st.page_link("pages/My Tutor.py", label="My tutor", icon = "🧑🏽‍🏫")
+                    st.page_link("pages/Feedback (Student View).py", label="Feedback Page", icon = "📈")
 
+        
 
-@st.cache_resource()
-def get_data_from_url(url: str) -> pd.DataFrame:
-    """
-    This is function to convert the URL's table into pd.DataFrame to be later processed.
-    This is made into seperate function, in order to cache resources.
-    Parameters:
-    - url (str): The URL of the website to convert to tables.
-    Returns:
-    - pd.DataFrame: Returns pd.DataFrame class if the function is able to succesfully convert.
-    Raises:
-    """
-    return pd.read_html(url)
-
-
-def ui() -> str:
-    """
-    This the mainpage's UI
-    Returns:
-    - str: messages to be logged.
-    """
-    st.set_page_config(
-        page_title="Wonjoon's CSV Generator",
-        page_icon="📃"
-    )
-    st.title("URL to CSV Converter")
-    st.subheader("Enter a wikipedia page or any URL with HTML table")
-    url = st.text_input(
-        "Enter URL here:",
-        "https://en.wikipedia.org/wiki/List_of_countries_by_real_GDP_growth_rate")
-    try:
-        list_of_dfs = get_data_from_url(url)
-        length_dfs = len(list_of_dfs)
-        st.write(
-            f"Total {length_dfs} table{
-                "s" if length_dfs > 1 else ""} found on the webpage")
-    except BaseException:
-        st.error(f"Could not find Table in the URL: {url}")
-        return f"Couldn't load a table in {url}"
-    url_meaning = url.split("/")[-1].replace("_", " ").replace("-", " ")
-    st.subheader(f"{url_meaning.title()}")
-    i = 0
-    for data in list_of_dfs:
-        i += 1
-        st.subheader(f"Table {i}")
-        # st.table can still fail with try. So, try was removed here.
-        st.table(data)
-        csv = data.to_csv().encode('utf-8')
-        st.download_button(
-            label=f"Download Table {i} as CSV",
-            data=csv,
-            file_name=f'Table_{i}.csv',
-            mime='text/csv',
-        )
-        if st.button(f"Flip Rows and Columns", key=i):
-            data = data.transpose()
-            st.write(data)
-            csv = data.to_csv().encode('utf-8')
-            st.download_button(
-                label=f"Download Transposed Table {i} as CSV",
-                data=csv,
-                file_name=f'Table_{i}_Transposed.csv',
-                mime='text/csv',
-            )
-        st.divider()
-    return f"Successfully converted {len(list_of_dfs)} table(s) from {url}"
-
-
-if __name__ == "__main__":
-    log_message = ui()
-    logger.info(log_message)
+    # if st.button("Continue"):
+    #     #change the list later
+    #     if unique_code != "" and unique_code in [unique_code]:
+    #         st.page_link("pages/Feedback (Student View).py", label="View Feedback", icon = "🧑‍🎓")
+    #         st.page_link("pages/My Tutor.py", label="My tutor", icon = "🧑‍🏫")
+    #     else:
+    #         st.error("Incorrect Code")
